@@ -214,7 +214,7 @@ def head(title, desc, path, ld, og_img="/assets/logo.png", extra=""):
 """
 
 
-LOGO = '<img class="logo" src="/assets/logo-nav.png" width="240" height="56" alt="Pass Your Florida Contractor Exam">'
+LOGO = '<img class="logo" src="/assets/logo-on-light.png" width="240" height="56" alt="Pass Your Florida Contractor Exam">'
 
 
 def header():
@@ -725,19 +725,19 @@ HOME_FAQ = [
 ]
 
 
-def hero_art():
-    return ('<svg class="hero-art" viewBox="0 0 1440 640" preserveAspectRatio="xMidYMid slice" aria-hidden="true">'
-            '<defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#071D30"/><stop offset=".55" stop-color="#0B2B45"/><stop offset="1" stop-color="#14496B"/></linearGradient>'
-            '<radialGradient id="sun" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#FFB07A"/><stop offset=".6" stop-color="#F26B3A"/><stop offset="1" stop-color="#F26B3A" stop-opacity="0"/></radialGradient></defs>'
-            '<rect width="1440" height="640" fill="url(#sky)"/>'
-            '<circle class="sun" cx="1090" cy="330" r="190" fill="url(#sun)" opacity=".9"/>'
-            '<g class="sky-grid" stroke="#FFFFFF" stroke-opacity=".06">' + "".join(f'<path d="M{x} 0V640"/>' for x in range(0, 1441, 80)) + "".join(f'<path d="M0 {y}H1440"/>' for y in range(0, 641, 80)) + '</g>'
-            '<path class="skyline" fill="#06182A" d="M720 470V380h30v-40h22v40h18v-90h40v90h16v-60h28v60h20v-130h46v130h18v-70h30v70h24v-40h26v40h20v-110h36v110h22v-50h30v50h26v-80h40v80h20v-30h40v30h24v-60h32v60h30V470z"/>'
-            '<g class="crane" stroke="#F26B3A" stroke-width="4" fill="none"><path d="M880 250V120M800 128h200M880 128l-60 40M960 128v60"/><path d="M955 188h10v14h-10z" fill="#F26B3A"/></g>'
-            '<g class="palm" fill="#06182A"><path d="M300 470c6-80 4-150-10-210l8-2c16 60 18 132 12 212z"/><path d="M296 262c-40-30-90-30-130-10 40-4 84 4 126 22zM300 258c20-46 64-70 112-72-40 16-74 40-104 80zM298 262c-50 0-92 22-116 60 32-26 74-44 120-50zM302 260c48 4 88 30 104 70-26-30-62-50-108-58z"/></g>'
-            '<path class="wave w1" fill="#0F6E8C" fill-opacity=".55" d="M0 500 C 240 460, 480 540, 720 500 S 1200 460, 1440 500 V640 H0Z"/>'
-            '<path class="wave w2" fill="#0B4F6C" d="M0 540 C 240 510, 480 580, 720 540 S 1200 510, 1440 540 V640 H0Z"/>'
-            '</svg>')
+def hero_wall():
+    """Three slow rows of real product photos from the store (book sets and packages)."""
+    seen, pics = set(), []
+    for p in sorted(products, key=lambda x: (x["tkey"] not in ("ht", "books", "one-package", "ultimate", "rental"), x["title"])):
+        if p["img"] and p["img"] not in seen and p["tkey"] in ("ht", "books", "one-package", "ultimate", "rental", "accelerator"):
+            seen.add(p["img"])
+            pics.append(p)
+    pics = pics[:36]
+    rows = ""
+    for r in range(3):
+        imgs = "".join(img_tag(p, 240) for p in pics[r::3])
+        rows += f'<div class="wall-row r{r + 1}"><div class="wall-track">{imgs}</div></div>'
+    return f'<div class="wall" aria-hidden="true">{rows}</div>'
 
 
 def picker():
@@ -749,17 +749,17 @@ def picker():
     choices = "".join(f'<button type="button" class="opt" data-choice="{k}" disabled>{e(l)}</button>' for k, l, _ in PATH_CHOICES)
     return f"""<form class="path" id="path-form" action="/#find-your-license" aria-label="Build your exam path">
   <div class="p-step" data-step="1">
-    <p class="p-h"><span class="p-n">1</span>Which license are you going for?</p>
+    <p class="p-h"><span class="p-n">01</span>Which license are you going for?</p>
     <div class="qchips">{quick}</div>
     <label class="sr" for="path-license">All Florida licenses</label>
     <select id="path-license" name="license"><option value="">Or pick from all {len(live_classes)} licenses</option>{opts}</select>
   </div>
   <div class="p-step" data-step="2">
-    <p class="p-h"><span class="p-n">2</span>How do you like to study?</p>
+    <p class="p-h"><span class="p-n">02</span>How do you like to study?</p>
     <div class="opts">{choices}</div>
   </div>
   <div class="p-step p-out" data-step="3" aria-live="polite">
-    <p class="p-h"><span class="p-n">3</span>Your exam path</p>
+    <p class="p-h"><span class="p-n">03</span>Your exam path</p>
     <div class="p-result"><p class="p-empty">Pick a license and a study style, and your package for both exams appears here with one Buy now button.</p></div>
   </div>
 </form>"""
@@ -773,9 +773,9 @@ def home():
     desc = f"Florida contractor exam prep for {ncls} licenses: tabbed books, courses and Business and Finance prep for the open-book CILB and ECLB exams. {total} packages."
     if len(desc) > 160:
         desc = f"Florida contractor exam prep for {ncls} licenses: tabbed books, courses and Business and Finance prep for the open-book state exams."
-    lead = (f"Most Florida contractors pass 2 or 3 open-book exams: a trade exam and the 120-question Business and Finance exam, "
-            f"with 70% needed on each part. Build your exam path below and get the right books and courses for both, "
-            f"from {total} packages across {ncls} licenses.")
+    lead = (f"Most Florida contractors sit 2 or 3 open-book exams: the trade exam and the 120-question Business and Finance "
+            f"exam, with 70% needed on each part. Tell us your license and how you study, and we will put the books and "
+            f"courses for every part in one order.")
     groups_html = ""
     gintro = {"div1": "Division I licenses cover whole buildings. Each takes Contract Administration, Project Management and Business and Finance.",
               "div2": "Division II licenses cover one trade. Each takes its own trade knowledge exam plus Business and Finance.",
@@ -811,13 +811,13 @@ def home():
     bf_lo = low("business-and-finance")
     body = f"""{header()}<main id="main">
 <section class="hero">
-  {hero_art()}
+  {hero_wall()}
   <div class="wrap hero-in">
     <div class="hero-txt">
-      <div class="eyebrow">Florida CILB, ECLB and county exams</div>
-      <h1><span class="h-line">Pass your Florida</span> <span class="h-line">contractor exam,</span> <span class="h-line accent">one path at a time.</span></h1>
+      <p class="kicker">Florida CILB, ECLB and county exams</p>
+      <h1><span class="h-line"><span>Pass your Florida</span></span> <span class="h-line dim"><span>contractor exam.</span></span></h1>
       <p class="lead">{lead}</p>
-      <ul class="trust"><li>Free USPS Media Mail on books</li><li>Matched to the Candidate Information Booklets</li><li>English and Spanish options</li></ul>
+      <p class="proof">{total} packages <span aria-hidden="true">/</span> {ncls} licenses <span aria-hidden="true">/</span> Free USPS Media Mail on books</p>
     </div>
     <div class="hero-path" id="exam-path">
       {picker()}
@@ -825,10 +825,10 @@ def home():
   </div>
 </section>
 <section class="stats wrap" aria-label="Key numbers">
-  <div class="stat reveal"><b data-count="{ncls}">{ncls}</b><span>Florida licenses covered</span></div>
-  <div class="stat reveal"><b data-count="{total}">{total}</b><span>prep packages</span></div>
-  <div class="stat reveal"><b data-count="120">120</b><span>Business and Finance questions</span></div>
-  <div class="stat reveal"><b data-count="70" data-suffix="%">70%</b><span>to pass each part</span></div>
+  <div class="stat"><b>{ncls}</b><span>Florida licenses covered</span></div>
+  <div class="stat"><b>{total}</b><span>prep packages in stock</span></div>
+  <div class="stat"><b>120</b><span>Business and Finance questions</span></div>
+  <div class="stat"><b>70%</b><span>to pass each part</span></div>
 </section>
 <div class="wrap">
 <section class="sec intro-sec"><h2 id="how-the-exam-path-works">How does the exam path picker work?</h2><p>Florida licenses come with more than one exam, and buying prep for only one of them is the most common mistake. The picker fixes that in 3 taps. Choose your license, choose how you like to study, and it pairs your trade prep with the second exam, such as Business and Finance from {money(bf_lo)}, in a single checkout.</p>

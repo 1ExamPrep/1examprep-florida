@@ -202,6 +202,9 @@
       d.body.appendChild(sc);
     }
 
+    /* hero photo wall: double each track for a seamless loop */
+    [].slice.call(d.querySelectorAll(".wall-track")).forEach(function (t) { t.innerHTML += t.innerHTML; });
+
     /* package-type chips on license pages */
     var chips = [].slice.call(d.querySelectorAll(".chip"));
     chips.forEach(function (ch) {
