@@ -199,7 +199,7 @@ def head(title, desc, path, ld, og_img="/assets/logo.png", extra=""):
 <meta name="twitter:title" content="{e(title)}">
 <meta name="twitter:description" content="{e(desc)}">
 <meta name="twitter:image" content="{og}">
-<meta name="theme-color" content="#0B2B45">
+<meta name="theme-color" content="#14284B">
 <link rel="icon" href="/assets/favicon.ico" sizes="any">
 <link rel="icon" href="/assets/favicon-48.png" type="image/png" sizes="48x48">
 <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
