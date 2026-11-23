@@ -1,0 +1,82 @@
+# Pass Your Florida Contractor Exam: guide for agents
+
+> Exam prep for Florida contractor licenses: CILB Division I and II, ECLB electrical, BCAIB inspectors and county cards. State exams are open book at Pearson VUE after registration with Professional Testing, Inc.; 70% passes each part. Certified construction contractors also pass the 120-question Business and Finance exam. Orders are fulfilled by 1 Exam Prep. Phone (877) 775-9400, email sales@1examprep.com. Updated 2026-11-22.
+
+## Key pages
+- [Exam path picker](https://passyourfloridacontractorexam.com/#exam-path)
+- [How to get a Florida contractor license](https://passyourfloridacontractorexam.com/how-to-get-licensed/)
+- [FAQ](https://passyourfloridacontractorexam.com/faq/)
+- [Contact](https://passyourfloridacontractorexam.com/contact/)
+- [Business and Finance exam prep](https://passyourfloridacontractorexam.com/business-and-finance/)
+
+## Licenses
+- [General Contractor exam prep](https://passyourfloridacontractorexam.com/general-contractor/): 21 packages from $75
+- [Building Contractor exam prep](https://passyourfloridacontractorexam.com/building-contractor/): 21 packages from $75
+- [Residential Contractor exam prep](https://passyourfloridacontractorexam.com/residential-contractor/): 22 packages from $75
+- [NASCLA Commercial General Building exam prep](https://passyourfloridacontractorexam.com/nascla-commercial-general-building/): 12 packages from $19.95
+- [Class A Air Conditioning exam prep](https://passyourfloridacontractorexam.com/air-a/): 13 packages from $65
+- [Class B Air Conditioning exam prep](https://passyourfloridacontractorexam.com/air-b/): 13 packages from $65
+- [Mechanical Contractor exam prep](https://passyourfloridacontractorexam.com/mechanical/): 11 packages from $79.99
+- [Plumbing Contractor exam prep](https://passyourfloridacontractorexam.com/plumbing-contractor/): 15 packages from $69.99
+- [Roofing Contractor exam prep](https://passyourfloridacontractorexam.com/roofing/): 14 packages from $75
+- [Sheet Metal Contractor exam prep](https://passyourfloridacontractorexam.com/sheet-metal/): 10 packages from $58.99
+- [Commercial Pool/Spa Contractor exam prep](https://passyourfloridacontractorexam.com/commercial-pool/): 11 packages from $75
+- [Residential Pool/Spa Contractor exam prep](https://passyourfloridacontractorexam.com/residential-pool/): 11 packages from $75
+- [Swimming Pool/Spa Servicing Contractor exam prep](https://passyourfloridacontractorexam.com/service-pool/): 11 packages from $53.99
+- [Underground Utility and Excavation exam prep](https://passyourfloridacontractorexam.com/underground-utility/): 13 packages from $69.99
+- [Solar Contractor exam prep](https://passyourfloridacontractorexam.com/solar/): 11 packages from $79.99
+- [Pollutant Storage Systems Specialty exam prep](https://passyourfloridacontractorexam.com/pollutant-storage/): 10 packages from $69.99
+- [Gas Line Specialty exam prep](https://passyourfloridacontractorexam.com/gas-line/): 10 packages from $58.99
+- [Glass and Glazing Specialty exam prep](https://passyourfloridacontractorexam.com/glass-and-glazing/): 10 packages from $37.99
+- [Gypsum Drywall Specialty exam prep](https://passyourfloridacontractorexam.com/gypsum/): 9 packages from $58.99
+- [Irrigation Specialty exam prep](https://passyourfloridacontractorexam.com/irrigation/): 11 packages from $34.99
+- [Marine Specialty exam prep](https://passyourfloridacontractorexam.com/marine-specialty/): 20 packages from $90.99
+- [Specialty Structure and Structural Specialties exam prep](https://passyourfloridacontractorexam.com/specialty-structure/): 19 packages from $64.99
+- [Garage Door Installation Specialty exam prep](https://passyourfloridacontractorexam.com/garage-door/): 9 packages from $53.99
+- [Window and Door Installation Specialty exam prep](https://passyourfloridacontractorexam.com/window-and-door/): 7 packages from $53.99
+- [Plaster and Lath Specialty exam prep](https://passyourfloridacontractorexam.com/plaster-and-lath/): 3 packages from $1,445
+- [Sign Specialty exam prep](https://passyourfloridacontractorexam.com/sign-specialty/): 10 packages from $64.99
+- [Unlimited Electrical Contractor exam prep](https://passyourfloridacontractorexam.com/unlimited-electrical/): 13 packages from $75
+- [Residential Electrical Contractor exam prep](https://passyourfloridacontractorexam.com/residential-electrical/): 9 packages from $53.99
+- [Alarm System Contractor I exam prep](https://passyourfloridacontractorexam.com/alarm-system-i/): 10 packages from $74.99
+- [Alarm System Contractor II exam prep](https://passyourfloridacontractorexam.com/alarm-system-ii/): 10 packages from $58.99
+- [Limited Energy Specialty exam prep](https://passyourfloridacontractorexam.com/limited-energy/): 10 packages from $53.99
+- [Lighting Maintenance Specialty exam prep](https://passyourfloridacontractorexam.com/lighting-maintenance/): 10 packages from $69.99
+- [NASCLA Residential Electrical exam prep](https://passyourfloridacontractorexam.com/nascla-residential-electrician/): 7 packages from $295
+- [Electrical Contractor Business Exam exam prep](https://passyourfloridacontractorexam.com/electrical-business/): 4 packages from $79.99
+- [Florida Principles and Practice exam prep](https://passyourfloridacontractorexam.com/principles-and-practice/): 8 packages from $79.99
+- [Residential Building Inspector exam prep](https://passyourfloridacontractorexam.com/residential-building-inspector-1b/): 10 packages from $79.99
+- [Residential Electrical Inspector exam prep](https://passyourfloridacontractorexam.com/residential-electrical-inspector-1e/): 6 packages from $79.99
+- [Residential Plumbing Inspector exam prep](https://passyourfloridacontractorexam.com/residential-plumbing-inspector-1p/): 10 packages from $79.99
+- [Residential Mechanical Inspector exam prep](https://passyourfloridacontractorexam.com/residential-mechanical-inspector-1m/): 4 packages from $245
+- [Coastal and Floodplain Inspector exam prep](https://passyourfloridacontractorexam.com/coastal-floodplain-inspector-1c/): 2 packages from $1,145
+- [Commercial Building Inspector exam prep](https://passyourfloridacontractorexam.com/commercial-building-inspector-2b/): 10 packages from $79.99
+- [Commercial Electrical Inspector exam prep](https://passyourfloridacontractorexam.com/commercial-electrical-inspector-2e/): 10 packages from $79.99
+- [Commercial Mechanical Inspector exam prep](https://passyourfloridacontractorexam.com/commercial-mechanical-inspector-2m/): 10 packages from $79.99
+- [Commercial Plumbing Inspector exam prep](https://passyourfloridacontractorexam.com/commercial-plumbing-inspector-2p/): 10 packages from $79.99
+- [Building Plans Examiner exam prep](https://passyourfloridacontractorexam.com/building-plans-examiner-3b/): 9 packages from $79.99
+- [Electrical Plans Examiner exam prep](https://passyourfloridacontractorexam.com/electrical-plans-examiner-3e/): 9 packages from $79.99
+- [Mechanical Plans Examiner exam prep](https://passyourfloridacontractorexam.com/mechanical-plans-examiner-3m/): 14 packages from $79.99
+- [Plumbing Plans Examiner exam prep](https://passyourfloridacontractorexam.com/plumbing-plans-examiner-3p/): 9 packages from $79.99
+- [Modular Building Inspector exam prep](https://passyourfloridacontractorexam.com/modular-building-inspector-fl/): 9 packages from $79.99
+- [Modular Plans Examiner exam prep](https://passyourfloridacontractorexam.com/modular-plans-examiner-fp/): 9 packages from $79.99
+- [Roofing Inspector exam prep](https://passyourfloridacontractorexam.com/roofing-inspector-fr/): 9 packages from $79.99
+- [Other ICC Certifications exam prep](https://passyourfloridacontractorexam.com/other-icc-certifications/): 11 packages from $95
+- [Journeyman Electrician exam prep](https://passyourfloridacontractorexam.com/journeyman-electrician/): 23 packages from $59.95
+- [Master Electrician exam prep](https://passyourfloridacontractorexam.com/master-electrician/): 22 packages from $59.95
+- [Journeyman and Master Plumber exam prep](https://passyourfloridacontractorexam.com/journeyman-and-master-plumber/): 10 packages from $44.99
+- [County Exams by GITS exam prep](https://passyourfloridacontractorexam.com/county-exams-gits/): 75 packages from $59.99
+- [County Exams by Prov and County Business and Law exam prep](https://passyourfloridacontractorexam.com/county-exams-prov/): 11 packages from $29.99
+- [Business and Finance exam prep](https://passyourfloridacontractorexam.com/business-and-finance/): 18 packages from $29.99
+- [Licensing and Application Services exam prep](https://passyourfloridacontractorexam.com/licensing-and-application-services/): 14 packages from $79
+- [Continuing Education exam prep](https://passyourfloridacontractorexam.com/continuing-education/): 4 packages from $25
+- [Florida Code Books and References exam prep](https://passyourfloridacontractorexam.com/code-books-and-references/): 17 packages from $15
+
+## Facts
+- Division I (General, Building, Residential): Business and Finance, Contract Administration, Project Management. Division II trades: trade knowledge plus Business and Finance.
+- A current, active CILB licensee adding a category is exempt from Business and Finance (rule 61G4-16.0015).
+- The CILB accepts NASCLA Commercial General Building scores in place of the trade exam since March 1, 2019.
+- Counties license journeyman electricians and plumbers; Prov and GITS give county exams.
+
+## How to buy
+Each product page has a Buy now link to `https://1examprep.com/cart/<variant-id>:1`, which opens Shopify checkout with that item. Exam path bundles join two items: `cart/<id>:1,<id>:1`. `/assets/finder.json` lists every license with its recommended packages.
