@@ -93,87 +93,108 @@
     }
 
 
-    /* exam path picker on the home page */
+    /* exam path picker (home hero): license type -> category -> recommendation */
     var form = d.getElementById("path-form");
     if (form) {
-      var data = null, lic = null, choice = null;
-      var sel = d.getElementById("path-license");
-      var steps = [].slice.call(form.querySelectorAll(".p-step"));
-      var qchips = [].slice.call(form.querySelectorAll(".qchip"));
-      var opts = [].slice.call(form.querySelectorAll(".opt"));
+      var data = null, lic = form.dataset.start, choice = "books-course";
+      var gsel = d.getElementById("path-group");
+      var box = form.querySelector(".lchips");
+      var lchipEls = [].slice.call(form.querySelectorAll(".lchip"));
+      var segs = [].slice.call(form.querySelectorAll(".seg"));
       var out = form.querySelector(".p-result");
+      var nameEl = form.querySelector("[data-licname]");
+      var MORE = +(box.dataset.moreAt || 5);
       var money = function (x) {
         if (!x) return "Free";
         return "$" + (Math.round(x) === x ? x.toLocaleString("en-US") : x.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
       };
       var esc = function (s) { var t = d.createElement("span"); t.textContent = s; return t.innerHTML; };
-      steps[1].classList.add("wait"); steps[2].classList.add("wait");
+      var ICON_CHECK = '<svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
       form.addEventListener("submit", function (ev) { ev.preventDefault(); });
       var load = function (cb) {
         if (data) return cb();
-        fetch("/assets/finder.json").then(function (r) { return r.json(); }).then(function (j) { data = j; cb(); })
-          .catch(function () { out.innerHTML = '<p class="p-empty">The picker could not load. Use the license list below, or call (877) 775-9400.</p>'; });
+        fetch("/assets/finder.json").then(function (r) { return r.json(); }).then(function (j) { data = j; cb(); }).catch(function () {});
       };
       var find = function (id) { for (var i = 0; i < data.licenses.length; i++) if (data.licenses[i].id === id) return data.licenses[i]; return null; };
-      var row = function (p, check) {
-        var img = p.i ? '<img src="' + esc(p.i) + '" alt="" width="64" height="64" loading="lazy">' : '<span></span>';
-        var title = '<a href="' + p.u + '">' + esc(p.t) + '</a><small>' + esc(p.k) + " · " + money(p.p) + "</small>";
-        if (check) title = '<label><input type="checkbox" checked data-add>' + '<span>' + title + "</span></label>";
-        return '<div class="pr">' + img + "<div>" + title + "</div></div>";
+      var moreBtn = d.createElement("button");
+      moreBtn.type = "button"; moreBtn.className = "lchip more"; moreBtn.textContent = "More";
+      moreBtn.addEventListener("click", function () {
+        lchipEls.forEach(function (c) { if (c.dataset.g === gsel.value) c.hidden = false; });
+        moreBtn.hidden = true;
+      });
+      box.appendChild(moreBtn);
+      var showGroup = function (g, keep) {
+        var n = 0, inGroup = 0;
+        lchipEls.forEach(function (c) {
+          var mine = c.dataset.g === g;
+          if (mine) inGroup++;
+          c.hidden = !mine || (n >= MORE && !(keep && c.dataset.lic === lic));
+          if (mine) n++;
+        });
+        moreBtn.hidden = inGroup <= MORE;
       };
       var render = function () {
         var L = find(lic);
-        if (!L || !choice || !L.ch[choice]) return;
-        var pair = L.ch[choice], main = data.products[pair[0]], add = pair[1] != null ? data.products[pair[1]] : null;
-        var html = '<p class="p-exams">' + esc(L.n) + ": " + L.x.map(esc).join(" + ") + "</p>" + row(main, false);
-        if (add) html += row(add, true);
-        html += '<div class="p-total"><span><span class="sr">Total </span><b data-total></b></span><a class="btn" data-buy rel="nofollow" href="#">Buy now</a></div>';
-        html += '<a class="p-more" href="' + L.u + '">Compare all ' + L.count + " " + esc(L.n) + " packages</a>";
+        if (!L) return;
+        nameEl.textContent = L.n;
+        segs.forEach(function (s) { s.disabled = !L.ch[s.dataset.choice]; });
+        if (!L.ch[choice]) {
+          var order = ["books-course", "books", "course", "everything", "free"];
+          for (var i = 0; i < order.length; i++) if (L.ch[order[i]]) { choice = order[i]; break; }
+        }
+        segs.forEach(function (s) { s.classList.toggle("on", s.dataset.choice === choice); });
+        var pair = L.ch[choice];
+        if (!pair) { out.innerHTML = '<p class="r-empty">No package for this license yet. Call (877) 775-9400.</p>'; return; }
+        var p = data.products[pair[0]], a = pair[1] != null ? data.products[pair[1]] : null;
+        var inc = (p.inc || []).slice(0, 3).concat(a ? [L.pn + " prep added"] : []);
+        var img = p.i ? '<img src="' + esc(p.i) + '" alt="' + esc(p.t) + '" width="120" height="120" loading="lazy">' : "";
+        var html = '<div class="r-body"><div class="r-img">' + img + '</div><ul class="r-list2">' +
+          inc.map(function (x) { return "<li>" + ICON_CHECK + esc(x) + "</li>"; }).join("") + "</ul></div>";
+        if (a) html += '<label class="r-add"><input type="checkbox" checked data-add> Include <a href="' + a.u + '">' + esc(a.t) + "</a> (+" + money(a.p) + ")</label>";
+        html += '<div class="r-foot"><div><p class="r-name"><a href="' + p.u + '">' + esc(p.t) + '</a></p><p class="r-sub">' + esc(p.k) + (a ? " + " + esc(L.pn) : "") +
+          '</p></div><p class="r-price" data-total></p></div><a class="btn go" data-buy rel="nofollow" href="#">Get my recommended package</a>';
         out.innerHTML = html;
+        bind(p, a);
+      };
+      var bind = function (p, a) {
         var cb = out.querySelector("[data-add]"), buy = out.querySelector("[data-buy]"), tot = out.querySelector("[data-total]");
         var upd = function () {
-          var withAdd = add && cb && cb.checked, sum = main.p + (withAdd ? add.p : 0);
-          tot.textContent = money(sum);
-          buy.textContent = main.p === 0 && !withAdd ? "Get the free demo" : (withAdd ? "Buy both exams" : "Buy now");
-          buy.href = "https://1examprep.com/cart/" + main.v + ":1" + (withAdd ? "," + add.v + ":1" : "");
+          var withAdd = a && cb && cb.checked;
+          tot.textContent = money(p.p + (withAdd ? a.p : 0));
+          buy.href = "https://1examprep.com/cart/" + p.v + ":1" + (withAdd ? "," + a.v + ":1" : "");
         };
         if (cb) cb.addEventListener("change", upd);
         upd();
-        steps[2].classList.remove("wait"); steps[2].classList.add("ok");
       };
-      var setLic = function (id) {
-        load(function () {
-          var L = find(id);
-          if (!L) return;
-          lic = id;
-          sel.value = id;
-          qchips.forEach(function (q) { q.classList.toggle("on", q.dataset.lic === id); });
-          steps[0].classList.add("ok"); steps[1].classList.remove("wait");
-          var first = null;
-          opts.forEach(function (o) {
-            var ok = !!L.ch[o.dataset.choice];
-            o.disabled = !ok;
-            if (ok && !first) first = o.dataset.choice;
-          });
-          if (!choice || !L.ch[choice]) {
-            choice = L.ch["books-course"] ? "books-course" : first;
-          }
-          opts.forEach(function (o) { o.classList.toggle("on", o.dataset.choice === choice); });
-          if (choice) { steps[1].classList.add("ok"); render(); }
-        });
-      };
-      qchips.forEach(function (q) { q.addEventListener("click", function () { setLic(q.dataset.lic); }); });
-      sel.addEventListener("change", function () { if (sel.value) setLic(sel.value); });
-      opts.forEach(function (o) {
-        o.addEventListener("click", function () {
-          choice = o.dataset.choice;
-          opts.forEach(function (x) { x.classList.toggle("on", x === o); });
-          steps[1].classList.add("ok");
-          render();
+      showGroup(gsel.value, true);
+      /* first paint is server-rendered; swap in the live version (same markup) once the data arrives */
+      load(render);
+      gsel.addEventListener("change", function () {
+        showGroup(gsel.value, false);
+        var first = lchipEls.filter(function (c) { return c.dataset.g === gsel.value; })[0];
+        if (first) first.click();
+      });
+      lchipEls.forEach(function (c) {
+        c.addEventListener("click", function () {
+          lic = c.dataset.lic;
+          lchipEls.forEach(function (x) { x.classList.toggle("on", x === c); });
+          load(render);
         });
       });
+      segs.forEach(function (s) {
+        s.addEventListener("click", function () { choice = s.dataset.choice; load(render); });
+      });
+      var go = d.querySelector("[data-focus-picker]");
+      if (go) go.addEventListener("click", function () { setTimeout(function () { gsel.focus({ preventScroll: true }); }, 400); });
       var q1 = new URLSearchParams(location.search).get("license");
-      if (q1) setLic(q1);
+      if (q1) {
+        load(function () {
+          var L = find(q1);
+          if (!L) return;
+          gsel.value = L.g; showGroup(L.g, false);
+          lchipEls.forEach(function (c) { if (c.dataset.lic === q1) { c.hidden = false; c.click(); } });
+        });
+      }
     }
 
     /* contact form: the iframe and its script are added here so the served HTML has no iframe or body script */

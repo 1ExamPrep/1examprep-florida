@@ -206,7 +206,7 @@ def head(title, desc, path, ld, og_img="/assets/logo.png", extra=""):
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="{FONTS}">
-<link rel="stylesheet" href="/assets/site.css">
+<link rel="stylesheet" href="/assets/site.css">\n{'<link rel="preload" as="image" type="image/webp" href="/assets/img/hero-1200.webp" media="(min-width: 981px)">' if path == "/" else ""}
 {extra}<script src="/assets/site.js" defer></script>
 {blocks}
 </head>
@@ -230,7 +230,7 @@ def header():
       <a href="/faq/">FAQ</a>
       <a href="/contact/">Contact</a>
     </nav>
-    <a class="call" href="tel:{PHONE_TEL}">{PHONE}</a>
+    <a class="call" href="tel:{PHONE_TEL}">{svg("phone")}{PHONE}</a>
   </div>
 </header>
 """
@@ -698,7 +698,7 @@ def finder_json():
         if k not in idx:
             idx[k] = len(prods)
             prods.append({"t": p["title"], "u": p["url"], "p": p["lo"], "c": p["compare"] if p["compare"] > p["hi"] else 0, "v": p["variant"],
-                          "k": p["tlabel"], "i": (p["img"] + ("&" if "?" in p["img"] else "?") + "width=240") if p["img"] else ""})
+                          "k": p["tlabel"], "inc": TYPE_HELP[p["tkey"]][1][:3], "i": (p["img"] + ("&" if "?" in p["img"] else "?") + "width=240") if p["img"] else ""})
         return idx[k]
     lic = []
     for c in live_classes:
@@ -707,7 +707,9 @@ def finder_json():
             p = pick(c, key)
             if p:
                 ch[key] = [ref(p), ref(addon(c, key))]
-        lic.append({"id": c, "n": short_name(c), "g": CLASSES[c]["group"], "u": cls_url(c), "x": exam_list(c), "count": len(listed[c]), "ch": ch})
+        part = partner_for(c)
+        lic.append({"id": c, "n": short_name(c), "g": CLASSES[c]["group"], "u": cls_url(c), "x": exam_list(c), "count": len(listed[c]), "ch": ch,
+                    "pn": short_name(part) if part else ""})
     data = {"updated": UPDATED, "choices": [[k, l] for k, l, _ in PATH_CHOICES], "groups": [[g, n] for g, n, _ in GROUPS], "licenses": lic, "products": prods}
     write("assets/finder.json", json.dumps(data, separators=(",", ":"), ensure_ascii=False))
 
@@ -740,27 +742,69 @@ def hero_wall():
     return f'<div class="wall" aria-hidden="true">{rows}</div>'
 
 
+SVG = {
+    "target": '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5"/>',
+    "calendar": '<rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4M16 3v4M4 10h16M9 14h2M13 14h2M9 17h2"/>',
+    "books": '<path d="M4 8l8-4 8 4-8 4z"/><path d="M4 12l8 4 8-4M4 16l8 4 8-4"/>',
+    "bolt": '<path d="M13 3L5 14h6l-1 7 8-11h-6z"/>',
+    "star": '<path d="M12 4l2.4 4.9 5.4.8-3.9 3.8.9 5.4-4.8-2.5-4.8 2.5.9-5.4L4.2 9.7l5.4-.8z"/>',
+    "check": '<path d="M5 12.5l4.5 4.5L19 7.5"/>',
+    "phone": '<path d="M6.6 10.8a15 15 0 006.6 6.6l2.2-2.2a1 1 0 011-.25 11.4 11.4 0 003.6.6 1 1 0 011 1V20a1 1 0 01-1 1A17 17 0 013 4a1 1 0 011-1h3.5a1 1 0 011 1c0 1.25.2 2.45.6 3.6a1 1 0 01-.25 1z"/>',
+    "chev": '<path d="M6 9l6 6 6-6"/>',
+}
+
+
+def svg(name, cls="i"):
+    return f'<svg class="{cls}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">{SVG[name]}</svg>'
+
+
+STYLES = [("books-course", "Books + course"), ("books", "Books only"), ("course", "Course only"), ("everything", "Everything")]
+START_LIC, START_STYLE = "general-contractor", "books-course"
+
+
+def rec_html(c, choice):
+    """The recommendation box, rendered here for the first paint; assets/site.js redraws it on every change."""
+    p = pick(c, choice)
+    a = addon(c, choice)
+    if not p:
+        return '<p class="r-empty">Pick a license to see your package.</p>'
+    inc = TYPE_HELP[p["tkey"]][1][:3] + ([f"{short_name(partner_for(c))} prep added"] if a else [])
+    total = p["lo"] + (a["lo"] if a else 0)
+    cart = p["cart"] + (f",{a['variant']}:1" if a else "")
+    img = img_tag(p, 240)
+    add = (f'<label class="r-add"><input type="checkbox" checked data-add> Include <a href="{a["url"]}">{e(a["title"])}</a> (+{money(a["lo"])})</label>') if a else ""
+    lis = "".join(f"<li>{svg('check')}{e(x)}</li>" for x in inc)
+    return (f'<div class="r-body"><div class="r-img">{img}</div><ul class="r-list2">{lis}</ul></div>{add}'
+            f'<div class="r-foot"><div><p class="r-name"><a href="{p["url"]}">{e(p["title"])}</a></p><p class="r-sub">{e(p["tlabel"])}{" + " + e(short_name(partner_for(c))) if a else ""}</p></div>'
+            f'<p class="r-price" data-total>{money(total)}</p></div>'
+            f'<a class="btn go" data-buy href="{cart}" rel="nofollow">Get my recommended package</a>')
+
+
 def picker():
-    opts = ""
-    for g, gname, _ in GROUPS:
-        cs = GROUP_CLASSES[g]
-        opts += f'<optgroup label="{e(gname)}">' + "".join(f'<option value="{c}">{e(short_name(c))}</option>' for c in cs) + "</optgroup>"
-    quick = "".join(f'<button type="button" class="qchip" data-lic="{c}">{e(short_name(c))}</button>' for c in POPULAR[:6])
-    choices = "".join(f'<button type="button" class="opt" data-choice="{k}" disabled>{e(l)}</button>' for k, l, _ in PATH_CHOICES)
-    return f"""<form class="path" id="path-form" action="/#find-your-license" aria-label="Build your exam path">
-  <div class="p-step" data-step="1">
-    <p class="p-h"><span class="p-n">01</span>Which license are you going for?</p>
-    <div class="qchips">{quick}</div>
-    <label class="sr" for="path-license">All Florida licenses</label>
-    <select id="path-license" name="license"><option value="">Or pick from all {len(live_classes)} licenses</option>{opts}</select>
+    groups = "".join(f'<option value="{g}"{" selected" if g == "div1" else ""}>{e(n)}</option>' for g, n, _ in GROUPS)
+    chips = ""
+    for g, _, _ in GROUPS:
+        for i, c in enumerate(GROUP_CLASSES[g]):
+            on = " on" if c == START_LIC else ""
+            hide = "" if g == "div1" else " hidden"
+            chips += f'<button type="button" class="lchip{on}" data-g="{g}" data-lic="{c}"{hide}>{svg("check", "i ck")}{e(short_name(c))}</button>'
+    styles = "".join(f'<button type="button" class="seg{" on" if k == START_STYLE else ""}" data-choice="{k}">{e(l)}</button>' for k, l in STYLES)
+    feats = [("target", "License match"), ("calendar", "Study plan"), ("books", "Book bundle"), ("bolt", "Instant recommendation")]
+    feat = "".join(f"<li>{svg(i)}<span>{t}</span></li>" for i, t in feats)
+    return f"""<form class="path" id="path-form" action="/#find-your-license" aria-label="Build your exam path" data-start="{START_LIC}">
+  <ul class="p-feats">{feat}</ul>
+  <div class="p-step">
+    <p class="p-h"><span class="p-n">1</span><label for="path-group">Select your license type</label></p>
+    <div class="sel">{svg("chev", "i chev")}<select id="path-group" name="group">{groups}</select></div>
   </div>
-  <div class="p-step" data-step="2">
-    <p class="p-h"><span class="p-n">02</span>How do you like to study?</p>
-    <div class="opts">{choices}</div>
+  <div class="p-step">
+    <p class="p-h"><span class="p-n">2</span>Choose your contractor category</p>
+    <div class="lchips" data-more-at="5">{chips}</div>
   </div>
-  <div class="p-step p-out" data-step="3" aria-live="polite">
-    <p class="p-h"><span class="p-n">03</span>Your exam path</p>
-    <div class="p-result"><p class="p-empty">Pick a license and a study style, and your package for both exams appears here with one Buy now button.</p></div>
+  <div class="rec" aria-live="polite">
+    <div class="rec-h">{svg("star", "i star")}<div><p class="rec-t">Your personalized recommendation</p><p class="rec-s">The best books and course for your Florida <b data-licname>{e(short_name(START_LIC))}</b> license.</p></div></div>
+    <div class="segs" role="group" aria-label="How do you want to study?">{styles}</div>
+    <div class="p-result">{rec_html(START_LIC, START_STYLE)}</div>
   </div>
 </form>"""
 
@@ -773,9 +817,9 @@ def home():
     desc = f"Florida contractor exam prep for {ncls} licenses: tabbed books, courses and Business and Finance prep for the open-book CILB and ECLB exams. {total} packages."
     if len(desc) > 160:
         desc = f"Florida contractor exam prep for {ncls} licenses: tabbed books, courses and Business and Finance prep for the open-book state exams."
-    lead = (f"Most Florida contractors sit 2 or 3 open-book exams: the trade exam and the 120-question Business and Finance "
-            f"exam, with 70% needed on each part. Tell us your license and how you study, and we will put the books and "
-            f"courses for every part in one order.")
+    lead = ("We help Florida contractors choose the right books, prep course and license path quickly, so you can study with "
+            "confidence and get licensed faster. Most licenses take a trade exam plus the 120-question Business and Finance "
+            "exam, and we cover both in one order.")
     groups_html = ""
     gintro = {"div1": "Division I licenses cover whole buildings. Each takes Contract Administration, Project Management and Business and Finance.",
               "div2": "Division II licenses cover one trade. Each takes its own trade knowledge exam plus Business and Finance.",
@@ -811,13 +855,13 @@ def home():
     bf_lo = low("business-and-finance")
     body = f"""{header()}<main id="main">
 <section class="hero">
-  {hero_wall()}
+  <picture class="hero-photo"><source media="(max-width: 980px)" type="image/webp" srcset="/assets/img/hero-m-780.webp"><source media="(max-width: 980px)" srcset="/assets/img/hero-m-780.jpg"><source type="image/webp" srcset="/assets/img/hero-1200.webp 1200w, /assets/img/hero-1717.webp 1717w" sizes="70vw"><img src="/assets/img/hero-1200.jpg" srcset="/assets/img/hero-1200.jpg 1200w, /assets/img/hero-1717.jpg 1717w" sizes="70vw" width="1717" height="916" alt="Florida contractor in a white hard hat and safety vest beside exam prep books, with a waterfront skyline at sunset behind him" fetchpriority="high"></picture>
   <div class="wrap hero-in">
     <div class="hero-txt">
-      <p class="kicker">Florida CILB, ECLB and county exams</p>
-      <h1><span class="h-line"><span>Pass your Florida</span></span> <span class="h-line dim"><span>contractor exam.</span></span></h1>
+      <p class="kicker">Florida contractor license exam prep</p>
+      <h1><span class="h-line"><span>Pass your Florida</span></span> <span class="h-line hot"><span>contractor exam.</span></span></h1>
       <p class="lead">{lead}</p>
-      <p class="proof">{total} packages <span aria-hidden="true">/</span> {ncls} licenses <span aria-hidden="true">/</span> Free USPS Media Mail on books</p>
+      <div class="hero-cta"><a class="btn hot" href="#exam-path" data-focus-picker>Get started</a><a class="tlink" href="#find-your-license">See packages</a></div>
     </div>
     <div class="hero-path" id="exam-path">
       {picker()}
