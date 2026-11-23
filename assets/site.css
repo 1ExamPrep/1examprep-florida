@@ -620,3 +620,11 @@ a:hover{color:var(--teal-d)}
 .btn.go{margin-top:12px;padding:16px 20px}
 .hero-in{padding-top:56px;padding-bottom:64px}
 @media (max-width:980px){.hero-in{margin-top:0;padding-top:28px}}
+/* Key takeaways box (same markup as the other Pass Your sites) */
+.takeaways{background:#fff;border:1px solid var(--line);border-left:4px solid var(--teal);border-radius:0 12px 12px 0;padding:22px 26px 18px;margin:40px 0 0}
+.takeaways h2{font-size:1.15rem;letter-spacing:-.01em;margin:0 0 10px}
+.takeaways ul{list-style:none;margin:0;padding:0}
+.takeaways li{position:relative;padding:6px 0 6px 26px;max-width:none;font-size:.98rem;line-height:1.5}
+.takeaways li::before{content:"";position:absolute;left:3px;top:14px;width:11px;height:6px;border-left:2px solid var(--teal-d);border-bottom:2px solid var(--teal-d);transform:rotate(-45deg)}
+.takeaways .upd{margin:10px 0 0;font:400 .8rem var(--serif);color:var(--steel)}
+.main-col>.takeaways{margin-top:46px}

@@ -295,6 +295,27 @@ def sources_html(links):
             f'<p class="updated">Last updated <time datetime="{UPDATED}">{UPDATED_TEXT}</time></p></aside>')
 
 
+def takeaways(items):
+    """Key takeaways box, same markup as the other Pass Your sites."""
+    items = [i for i in items if i]
+    if not items:
+        return ""
+    li = "".join(f"<li>{e(i)}</li>" for i in items)
+    return (f'<aside class="takeaways" aria-labelledby="key-takeaways"><h2 id="key-takeaways">Key takeaways</h2><ul>{li}</ul>'
+            f'<p class="upd">Updated <time datetime="{UPDATED}">{UPDATED_TEXT}</time> · prices checked against the 1 Exam Prep store</p></aside>')
+
+
+def fl(name):
+    return name if name.startswith("Florida") else "Florida " + name
+
+
+def exam_sentence(c):
+    x = exam_list(c)
+    if not x:
+        return ""
+    return x[0] if len(x) == 1 else ", ".join(x[:-1]) + " and " + x[-1]
+
+
 SRC_CORE = [("Florida DBPR Construction Industry Licensing Board", DBPR_CILB), ("DBPR construction examinations", DBPR_EXAMS)]
 
 
@@ -490,6 +511,39 @@ def class_faq(c):
     return qas[:8]
 
 
+def class_takeaways(c):
+    ps = listed[c]
+    pp = paid(ps)
+    g = CLASSES[c]["group"]
+    demo = any(p["tkey"] == "demo" for p in ps)
+    part = partner_for(c)
+    best = pick(c, "books-course") or pick(c, "books")
+    out = [f"{len(ps)} {short_name(c)} prep products, from {money(min(p['lo'] for p in pp))} to {money(max(p['hi'] for p in pp))}."]
+    if g in ("div1", "div2", "electrical", "inspectors"):
+        if g in ("div1", "div2"):
+            out.append(f"To get this license you pass {exam_sentence(c)}, open book, with 70% needed on each CILB part.")
+        elif g == "electrical" and c not in ("electrical-business",):
+            out.append("To get this license you pass the Technical and Safety exam and the Business exam, both open book at Pearson VUE.")
+        else:
+            out.append(f"To get this license you pass {exam_sentence(c)} at Pearson VUE.")
+    elif g == "county":
+        out.append("Counties license this trade, and Prov or GITS give the exam, so match the books to your county's bulletin.")
+        nc = sum(1 for p in ps if p["tkey"] in ("course", "live", "practice") or p["ptype_raw"] in ("Online Course", "Practice Course", "Live Training"))
+        out.append(f"{nc} of the {len(ps)} items are online courses or practice tests; the rest are books, tabs and study guides.")
+    else:
+        out.append(f"{fl(short_name(c))} {CLASSES[c]['scope'].split(';')[0].rstrip('.')}.")
+    if part and best:
+        a = addon(c, "books-course") or addon(c, "books")
+        if a:
+            out.append(f"The most popular path pairs {best['title']} with {short_name(part)} prep for {money(best['lo'] + a['lo'])} in one order.")
+    if g in ("div1", "div2"):
+        out.append("A current, active CILB licensee adding this license skips Business and Finance.")
+    if demo:
+        out.append("A free AI tutor demo lets you try the questions before you buy.")
+    out.append("Every Buy now button goes straight to secure checkout at our fulfillment center, 1 Exam Prep.")
+    return out[:5]
+
+
 def class_page(c):
     k = CLASSES[c]
     n, sn = k["name"], short_name(c)
@@ -570,6 +624,7 @@ def class_page(c):
 </section>
 <div class="wrap cols">
 <div class="main-col">
+{takeaways(class_takeaways(c))}
 <section class="sec"><h2 id="who-needs-it">Who needs the Florida {e(sn)} license?</h2><p>{e(who_text(c))}</p></section>
 <section class="sec"><h2 id="what-is-on-the-exam">What is on the {e(sn)} exam?</h2><p>{e(exam_text(c))}</p>
 <table class="facts-table reveal"><caption>{e(sn)} exam at a glance</caption><tbody>{exam_rows(c)}</tbody></table></section>
@@ -587,6 +642,26 @@ def class_page(c):
 
 
 # ---------------------------------------------------------------- product pages
+def product_takeaways(p, a):
+    c = p["cls"]
+    sn = short_name(c)
+    free = p["lo"] == 0
+    what = f"for the Florida {sn} exam" if CLASSES[c]["group"] != "business" else f"from the {fl(sn)} range"
+    out = [f"{p['tlabel']} {what}: {'free' if free else price_span(p)}"
+           + (f", down from {money(p['compare'])}." if p["compare"] > p["hi"] else ".")]
+    if exam_sentence(c):
+        out.append(f"The {sn} license takes {exam_sentence(c)}.")
+    else:
+        out.append(f"{fl(sn)} {CLASSES[c]['scope'].split(';')[0]}.")
+    if a:
+        out.append(f"Add {a['title']} ({money(a['lo'])}) to cover the second exam in the same order.")
+    ship = schemakit.ships(p["title"], p["ptype_raw"])
+    out.append("Books ship free by USPS Media Mail inside the U.S." if ship else "Online access arrives by email, with nothing to ship.")
+    if not free:
+        out.append("The 1 Exam Prep store lists all sales as final, so check the contents with the team before you buy if unsure.")
+    return out
+
+
 def product_page(p):
     c = p["cls"]
     sn = short_name(c)
@@ -673,6 +748,7 @@ def product_page(p):
   </div>
 </div>
 <div class="cols"><div class="main-col">
+{takeaways(product_takeaways(p, a))}
 <section class="sec"><h2 id="whats-included">What does the {e(short)} include?</h2><p>{about}</p><ul class="ticks">{inc}</ul></section>
 <section class="sec"><h2 id="which-exam">Which Florida exam is it for?</h2><p>The <a href="{cls_url(c)}">Florida {e(sn)} license</a> {e(CLASSES[c]['scope'])}. {e(exam_text(c))}</p></section>
 {pair}
@@ -875,6 +951,11 @@ def home():
   <div class="stat"><b>70%</b><span>to pass each part</span></div>
 </section>
 <div class="wrap">
+{takeaways([f"{total} products across {ncls} Florida licenses, from {money(min(p['lo'] for p in products if p['lo'] > 0))} to {money(max(p['hi'] for p in products))}.",
+            "Division I licenses (General, Building, Residential) take 3 exam parts; Division II trades take their trade exam plus Business and Finance.",
+            "Business and Finance has 120 questions over about 6.5 hours, open book, and every part needs 70%.",
+            "Register with Professional Testing, Inc., then book Pearson VUE; in Florida you can pass the exams before you apply.",
+            "Every Buy now button goes straight to secure checkout at our fulfillment center, 1 Exam Prep."])}
 <section class="sec intro-sec"><h2 id="how-the-exam-path-works">How does the exam path picker work?</h2><p>Florida licenses come with more than one exam, and buying prep for only one of them is the most common mistake. The picker fixes that in 3 taps. Choose your license, choose how you like to study, and it pairs your trade prep with the second exam, such as Business and Finance from {money(bf_lo)}, in a single checkout.</p>
 <ol class="mini-steps"><li>Pick a license from the 6 most popular or the full list of {ncls}.</li><li>Pick books, a course, everything done for you or a free demo.</li><li>Press Buy now and both exams are covered in one order.</li></ol></section>
 <section class="sec"><h2 id="which-exams">Which exams does each Florida license take?</h2><p>The exams depend on the board that issues your license. The table shows the 6 paths this site covers, with the board and every exam part. All state exams are open book at Pearson VUE.</p>
@@ -954,6 +1035,11 @@ def guide():
     body = f"""{header()}<main id="main">
 <section class="phero"><div class="wrap">{crumb_html(crumb)}<div class="eyebrow">Licensing guide</div><h1>How to get a Florida contractor license</h1><p class="lead">{lead}</p></div></section>
 <div class="wrap cols"><div class="main-col">
+{takeaways(["A certified license from the state exams works anywhere in Florida; a registered license works only where the local certificate was issued.",
+            "Register with Professional Testing, Inc., then book each exam part at Pearson VUE.",
+            "Division I takes 3 parts and Division II takes 2; every part is open book and needs 70%.",
+            "Pass the exams first, then send DBPR one complete application with scores, credit report, experience and insurance.",
+            f"This site covers {len(live_classes)} Florida licenses, each with its own exam path and prep packages."])}
 {sec_html}
 {faq_html(GUIDE_FAQ)}
 {sources_html([SRC_CORE[0], SRC_CORE[1], ("DBPR electrical examinations", DBPR_ELEC), ("Florida Statutes 489.111", STATUTE_489), ("Florida Division of Corporations", SUNBIZ)])}
@@ -976,6 +1062,10 @@ def faq_page():
     body = f"""{header()}<main id="main">
 <section class="phero"><div class="wrap">{crumb_html(crumb)}<div class="eyebrow">Questions</div><h1>Florida contractor exam FAQ</h1><p class="lead">{lead}</p></div></section>
 <div class="wrap cols"><div class="main-col">
+{takeaways(["The CILB licenses construction trades, the ECLB licenses electrical contractors and counties issue journeyman cards.",
+            "Business and Finance is 120 questions, open book, and every certified construction contractor passes it once.",
+            "The CILB has accepted NASCLA Commercial General Building scores in place of the trade exam since March 1, 2019.",
+            "A current, active CILB licensee adding a category skips Business and Finance under rule 61G4-16.0015."])}
 {faq_html(qas[:half], "licenses-and-boards", "Licenses and boards")}
 {faq_html(qas[half:], "exams-and-scheduling", "Exams and scheduling")}
 <section class="sec"><h2 id="exam-facts-at-a-glance">What are the key exam numbers?</h2><p>Florida exam rules come down to a few numbers. The table collects the ones candidates ask about most, from DBPR and published exam outlines.</p>
@@ -1020,6 +1110,10 @@ def contact_page():
     body = f"""{header()}<main id="main">
 <section class="phero"><div class="wrap">{crumb_html(crumb)}<div class="eyebrow">Contact</div><h1>Contact us</h1><p class="lead">{lead}</p></div></section>
 <div class="wrap cols"><div class="main-col">
+{takeaways([f"Reach 1 Exam Prep by the form on this page, by phone at {PHONE} or by email at {EMAIL}.",
+            "Include your license, your Pearson VUE test date and the books you already own for a faster answer.",
+            f"The same team that ships every order answers, across {len(products)} Florida products.",
+            "DBPR or your county decides every license application; the team helps with products and paperwork."])}
 <section class="sec"><h2 id="send-a-message">How do I send a message?</h2><p>Fill in the form below and press submit. Your message goes straight to the 1 Exam Prep team, which handles every order for this site. Include your phone number if you would rather get a call back.</p>{form}</section>
 <section class="sec"><h2 id="other-ways-to-reach-us">What are the other ways to reach us?</h2><p>Some questions are faster by phone, especially when a test date is close. Use whichever of the 3 options suits you.</p>
 <table><caption>Ways to contact 1 Exam Prep</caption><tbody><tr><th scope="row">Phone</th><td><a href="tel:{PHONE_TEL}">{PHONE}</a></td></tr><tr><th scope="row">Email</th><td><a href="mailto:{EMAIL}">{EMAIL}</a></td></tr><tr><th scope="row">Form</th><td>On this page, answered by the same team</td></tr></tbody></table></section>
