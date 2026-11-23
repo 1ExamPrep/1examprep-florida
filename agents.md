@@ -3,6 +3,7 @@
 > Exam prep for Florida contractor licenses: CILB Division I and II, ECLB electrical, BCAIB inspectors and county cards. State exams are open book at Pearson VUE after registration with Professional Testing, Inc.; 70% passes each part. Certified construction contractors also pass the 120-question Business and Finance exam. Orders are fulfilled by 1 Exam Prep. Phone (877) 775-9400, email sales@1examprep.com. Updated 2026-11-22.
 
 ## Key pages
+- [Blog](https://passyourfloridacontractorexam.com/blog/)
 - [Exam path picker](https://passyourfloridacontractorexam.com/#exam-path)
 - [How to get a Florida contractor license](https://passyourfloridacontractorexam.com/how-to-get-licensed/)
 - [FAQ](https://passyourfloridacontractorexam.com/faq/)

@@ -19,6 +19,8 @@ BRAND = CFG["brand"]
 PHONE, PHONE_TEL, EMAIL = CFG["phone"], CFG["phoneTel"], CFG["email"]
 FORM_ID = CFG["contactFormId"]
 OUT = "."
+STATE_NAME = "Florida"
+BLOG_URLS = []
 STOP = {"the", "and", "for", "of", "on", "with", "to", "a", "an", "in", "by", "from", "based", "includes", "florida"}
 e = lambda s: html.escape(str(s), quote=True)
 
@@ -227,6 +229,7 @@ def header():
       <a href="/#find-your-license">Licenses</a>
       <a href="/how-to-get-licensed/">How to get licensed</a>
       <a href="/business-and-finance/">Business and Finance</a>
+      <a href="/blog/">Blog</a>
       <a href="/faq/">FAQ</a>
       <a href="/contact/">Contact</a>
     </nav>
@@ -248,7 +251,7 @@ def footer():
       <div class="f-brand">
         <a class="brand" href="/"><img class="logo" src="/assets/logo-nav.png" width="240" height="56" alt="Pass Your Florida Contractor Exam"></a>
         <p>{e(CFG['tagline'])}</p>
-        <p>Orders ship from 1 Exam Prep. Call <a href="tel:{PHONE_TEL}">{PHONE}</a>, email <a href="mailto:{EMAIL}">{EMAIL}</a> or use the <a href="/contact/">contact form</a>.</p>
+        <p>Orders ship from 1 Exam Prep. Call <a href="tel:{PHONE_TEL}">{PHONE}</a>, email <a href="mailto:{EMAIL}">{EMAIL}</a> or use the <a href="/contact/">contact form</a>. Read the <a href="/blog/">blog</a> for answers to common exam questions.</p>
       </div>
       {''.join(cols)}
     </div>
@@ -1132,7 +1135,7 @@ def contact_page():
 
 # ---------------------------------------------------------------- agent files
 def agent_files():
-    urls = ["/", "/how-to-get-licensed/", "/faq/", "/contact/"] + [cls_url(c) for c in live_classes] + [p["url"] for p in products]
+    urls = ["/", "/how-to-get-licensed/", "/faq/", "/contact/"] + BLOG_URLS + [cls_url(c) for c in live_classes] + [p["url"] for p in products]
     sm = "".join(f"<url><loc>{SITE}{u}</loc><lastmod>{UPDATED}</lastmod></url>" for u in urls)
     write("sitemap.xml", f'<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">{sm}</urlset>\n')
     write("robots.txt", f"User-agent: *\nAllow: /\n\nUser-agent: GPTBot\nAllow: /\n\nUser-agent: ClaudeBot\nAllow: /\n\nUser-agent: Google-Extended\nAllow: /\n\nUser-agent: PerplexityBot\nAllow: /\n\nUser-agent: Bingbot\nAllow: /\n\nSitemap: {SITE}/sitemap.xml\n")
@@ -1142,6 +1145,7 @@ def agent_files():
 > Exam prep for Florida contractor licenses: CILB Division I and II, ECLB electrical, BCAIB inspectors and county cards. State exams are open book at Pearson VUE after registration with Professional Testing, Inc.; 70% passes each part. Certified construction contractors also pass the 120-question Business and Finance exam. Orders are fulfilled by 1 Exam Prep. Phone {PHONE}, email {EMAIL}. Updated {UPDATED}.
 
 ## Key pages
+- [Blog]({SITE}/blog/)
 - [Exam path picker]({SITE}/#exam-path)
 - [How to get a Florida contractor license]({SITE}/how-to-get-licensed/)
 - [FAQ]({SITE}/faq/)
@@ -1174,7 +1178,10 @@ if __name__ == "__main__":
                 shutil.rmtree(d)
             elif os.path.isfile(d):
                 os.remove(d)
-    home(); guide(); faq_page(); contact_page(); agent_files(); not_found(); finder_json()
+    home(); guide(); faq_page(); contact_page()
+    sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "tools")); import blogpages
+    BLOG_URLS = blogpages.build(globals())
+    agent_files(); not_found(); finder_json()
     for c in live_classes:
         class_page(c)
     for p in products:
@@ -1182,6 +1189,6 @@ if __name__ == "__main__":
     if CFG.get("siteUrl"):
         open("CNAME", "w").write(SITE.split("//")[1] + "\n")
     open(".nojekyll", "w").close()
-    gen = ["index.html", "404.html", "sitemap.xml", "robots.txt", "llms.txt", "agents.md", "how-to-get-licensed", "faq", "contact", "assets/finder.json"] + live_classes
+    gen = ["index.html", "404.html", "sitemap.xml", "robots.txt", "llms.txt", "agents.md", "how-to-get-licensed", "faq", "contact", "blog", "assets/finder.json"] + live_classes
     json.dump(gen, open(MAN, "w"), indent=0)
     print(f"Built {len(live_classes)} license pages and {len(products)} product pages into the repo root")
