@@ -8,6 +8,7 @@
 - [How to get a Florida contractor license](https://passyourfloridacontractorexam.com/how-to-get-licensed/)
 - [FAQ](https://passyourfloridacontractorexam.com/faq/)
 - [Contact](https://passyourfloridacontractorexam.com/contact/)
+- [Customer reviews](https://passyourfloridacontractorexam.com/reviews/)
 - [Business and Finance exam prep](https://passyourfloridacontractorexam.com/business-and-finance/)
 
 ## Licenses
